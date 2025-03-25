@@ -19,6 +19,8 @@
       }
     ],
     "paths": {
+      "@database/*": ["./src/Database/*"],
+      "@models/*": ["./src/Model/*"],
       "@/*": ["./src/*"]
     }
   },

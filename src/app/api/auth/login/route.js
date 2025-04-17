@@ -3,10 +3,11 @@ import { connectDB } from "@database/connectDB";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
 export async function POST(request) {
   try {
     await connectDB();
-
+    
     const { email, password } = await request.json();
 
     // Validate input
@@ -52,4 +53,12 @@ export async function POST(request) {
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
+}
+
+
+export  function GET() {
+  return new Response(
+    JSON.stringify({ error: "Method not allowed" ,__dirname,__filename}),
+    { status: 200, headers: { "Content-Type": "application/json",__dirname } }
+  );
 }

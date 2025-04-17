@@ -1,7 +1,12 @@
-export default function Page() {
+
+
+
+
+export default function page(){
   return(
     <>
-      <h1> this page</h1>
+    
+    
     </>
   )
 }

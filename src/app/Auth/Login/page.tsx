@@ -1,64 +1,101 @@
 "use client";
-
-import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
 
     const res = await signIn("credentials", {
-      ...formData,
       redirect: false,
+      email,
+      password,
     });
 
+    setLoading(false);
+
     if (res?.error) {
-      setError(res.error);
+      setError("Invalid email or password");
     } else {
-      router.push("/dashboard"); // Redirect on success
+      setError("");
+      router.push("/");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <div className="bg-gray-800 p-8 rounded-xl shadow-lg w-96">
-        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
-        {error && <p className="text-red-500 text-center">{error}</p>}
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="flex items-center justify-center min-h-screen bg-[#0a0f2c]">
+      <form
+        onSubmit={handleLogin}
+        className="bg-[#1e293b] p-8 rounded-xl shadow-2xl space-y-4 w-full sm:w-96"
+      >
+        <h2 className="text-3xl font-bold text-center mb-6 text-white">
+          Login
+        </h2>
+
+        <div className="mb-4">
           <input
             type="email"
-            name="email"
             placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 border border-blue-400 bg-[#0f172a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={loading}
             required
           />
+        </div>
+
+        <div className="mb-4 relative">
           <input
-            type="password"
-            name="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 border border-blue-400 bg-[#0f172a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={loading}
             required
           />
-          <button type="submit" className="w-full py-2 bg-blue-600 rounded text-white">
-            Login
-          </button>
-        </form>
-      </div>
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-blue-300"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
+        </div>
+
+        {error && (
+          <p className="text-red-400 text-center text-sm mb-4">{error}</p>
+        )}
+
+        <button
+          type="submit"
+          className={`w-full p-3 rounded-md text-white font-semibold transition duration-300 ${
+            loading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-700 hover:bg-blue-800"
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <p className="text-center text-sm text-blue-200 mt-4">
+          Don&apos;t have an account?{" "}
+          <Link href="Register" className="text-blue-400 hover:underline">
+            Register
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }

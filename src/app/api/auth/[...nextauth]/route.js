@@ -1,46 +1,53 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectDB } from "@/database/connectDB";
-import User from "@/Model/User";
+import { connectDB } from "@database/connectDB";
+import User from "@models/User";
 import bcrypt from "bcryptjs";
 
-export const authOptions = {
+const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "user@example.com" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await connectDB(); // Connect to MongoDB
-        const { email, password } = credentials;
-        const user = await User.findOne({ email });
+        await connectDB();
 
-        if (!user) throw new Error("User not found");
+        const user = await User.findOne({ email: credentials.email });
+        if (!user) throw new Error("No user found");
 
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if (!isValidPassword) throw new Error("Invalid password");
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) throw new Error("Wrong password");
 
-        return { id: user._id, name: user.name, email: user.email };
+        return {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) token.user = user;
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user;
+      if (token?.user) session.user = token.user;
       return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };

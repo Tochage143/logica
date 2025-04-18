@@ -1,114 +1,126 @@
-"use client";
+'use client'
 
 import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import axios from "axios";
-import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
-  const { data: session } = useSession();
   const router = useRouter();
-
-  // Redirect if logged in
-  if (session) {
-    router.replace("/");
-    return null;
-  }
 
   const [formData, setFormData] = useState({
     name: "",
-    username: "",
     email: "",
+    username: "",
     password: "",
-    confirmPassword: "",
   });
 
-  const [showPassword, setShowPassword] = useState({
-    password: false,
-    confirmPassword: false,
-  });
-
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    // Check if passwords match
-    if (formData.password !== formData.confirmPassword) {
-      return setError("Passwords do not match");
-    }
+    setSuccess("");
 
     try {
-      // Register the user
-      await axios.post("/api/auth/register", formData, {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      // Automatically sign in the user after registration
-      const result = await signIn("credentials", {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
-      });
+      const data = await res.json();
 
-      if (result?.error) {
-        setError(result.error);
+      if (!res.ok) {
+        setError(data.message || "Something went wrong");
       } else {
-        alert("Registered and logged in successfully!");
-        router.push("/"); // Redirect to home page
+        setSuccess("Account created successfully! Redirecting...");
+        setTimeout(() => router.push("/login"), 2000);
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong");
+      setError("Failed to register. Try again.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <div className="bg-gray-800 p-8 rounded-2xl shadow-lg w-96">
-        <h1 className="text-2xl font-semibold text-center mb-6">Register</h1>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {[{ label: "Name", name: "name" }, { label: "Username", name: "username" }, { label: "Email", name: "email" }].map((field) => (
-            <div className="flex flex-col" key={field.name}>
-              <label className="mb-1 text-gray-300">{field.label}</label>
-              <input
-                type="text"
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                className="p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          ))}
-          {["password", "confirmPassword"].map((field) => (
-            <div className="flex flex-col relative" key={field}>
-              <label className="mb-1 text-gray-300">{field === "password" ? "Password" : "Confirm Password"}</label>
-              <input
-                type={showPassword[field] ? "text" : "password"}
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                className="p-2 pr-10 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <div
-                className="absolute right-3 top-9 cursor-pointer text-gray-400"
-                onClick={() => setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }))}
-              >
-                {showPassword[field] ? <AiFillEyeInvisible /> : <AiFillEye />}
-              </div>
-            </div>
-          ))}
-          <button type="submit" className="w-full mt-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold transition duration-200">
-            Register
+    <div className="min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1e293b] flex items-center justify-center">
+      <div className="w-full max-w-md bg-[#1e293b] p-8 rounded-2xl shadow-lg">
+        <h2 className="text-3xl font-bold text-white mb-6 text-center">Register</h2>
+
+        {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
+        {success && <p className="text-green-400 text-sm mb-3">{success}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            className="w-full p-3 bg-[#0f172a] text-white rounded-lg outline-none"
+            type="text"
+            placeholder="Full Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            className="w-full p-3 bg-[#0f172a] text-white rounded-lg outline-none"
+            type="text"
+            placeholder="Username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            className="w-full p-3 bg-[#0f172a] text-white rounded-lg outline-none"
+            type="email"
+            placeholder="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+
+          <div className="relative">
+            <input
+              className="w-full p-3 bg-[#0f172a] text-white rounded-lg pr-10 outline-none"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <span
+              className="absolute right-3 top-3.5 text-white cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white p-3 rounded-lg font-semibold"
+          >
+            Create Account
           </button>
         </form>
+
+        <p className="text-sm text-gray-400 text-center mt-4">
+          Already have an account?{" "}
+          <a href="Login" className="text-blue-400 hover:underline">
+            Login here
+          </a>
+        </p>
       </div>
     </div>
   );

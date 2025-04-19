@@ -21,7 +21,9 @@
     "paths": {
       "@database/*": ["./src/Database/*"],
       "@models/*": ["./src/Model/*"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/app/Components/*"],
+      "@styles/*": ["./src/styles/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/auth/register/route.js", "src/app/api/auth/[...nextauth]/route.js"],

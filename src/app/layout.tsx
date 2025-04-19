@@ -1,7 +1,8 @@
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "./Components/Navigation/Sidebar";
+import "./styles.scss";
+import ClientLayout from "./ClientLayout"; // ✅ Client wrapper
+
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -13,16 +14,16 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-
+export const metadata = {
+  title: "My App",
+  description: "Awesome app by Rohit 🚀",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex gap-2 min-h-screen">
-          <Sidebar />
-          <main className="flex-1">{children}</main>
-        </div>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

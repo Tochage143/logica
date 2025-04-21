@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Home, File, Folder, Settings, User } from "lucide-react";
+import { Home, File, Folder, Settings, User , Network ,LogOut } from "lucide-react";
 import SidebarItem from "./SidebarItem";
-
 export default function Sidebar() {
   const [width, setWidth] = useState(80);
 
   const topItems = [
-    { name: "Home", icon: Home, link: "/" },
+   
     { name: "Notes", icon: Folder, link: "/Editor" },
-  ];
+    { name:'GraphView', icon: Network, link: "/Graph" },
+      ]
 
   const bottomItems = [
     { name: "Profile", icon: User, link: "/Profile" },
-    { name: "Settings", icon: Settings, link: "/settings" },
-    { name: "Logout", icon: User, link: "/logout" },
+    
+    { name: "Logout", icon: LogOut , link: "/logout" },
   ];
 
   return (

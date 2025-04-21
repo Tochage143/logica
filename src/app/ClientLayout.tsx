@@ -7,7 +7,7 @@ import Sidebar from "./Components/Navigation/Sidebar";
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const noSidebarRoutes = ["/Auth/Login", "/Auth/Register"];
+  const noSidebarRoutes = ["/Auth", '/'];
   const shouldShowSidebar = !noSidebarRoutes.includes(pathname);
 
   return (

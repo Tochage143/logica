@@ -1,0 +1,183 @@
+
+.filtered {
+    font-size: 16px;
+    user-select: none;
+    min-height: 320px;
+    padding: 20px;
+    box-sizing: content-box;
+  }
+  
+  .filtered .tree,
+  .filtered .tree-node,
+  .filtered .tree-node-group {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .filtered .tree-branch-wrapper {
+    outline: none;
+  }
+  
+  .filtered .tree-node {
+    cursor: pointer;
+  }
+  
+  .filtered .tree-node .name:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  .filtered .tree-node--focused .name {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .filtered .tree-node {
+    display: inline-block;
+  }
+  
+  .filtered .checkbox-icon {
+    margin: 0 5px;
+    vertical-align: middle;
+  }
+  
+  .filtered button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  
+  .filtered .arrow {
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+  
+  .filtered .arrow--open {
+    transform: rotate(90deg);
+  }
+  
+  .filtered [role="treeitem"] {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: px-to-rem(2);
+  }
+  
+  .filtered [role="treeitem"]:focus-visible {
+    outline: 0.125rem solid #0064d6 !important;
+  }
+  
+  .filtered
+    [role="treeitem"]:focus-visible
+    label:not(.ant-checkbox-wrapper-disabled):hover
+    > span:nth-of-type(2) {
+    padding-right: px-to-rem(7);
+    margin-right: px-to-rem(1);
+    line-height: px-to-rem(16);
+  }
+  
+  .filtered [role="treeitem"].tree-node--focused {
+    outline: 0.125rem solid #0064d6 !important;
+  }
+  
+  .filtered .tree-node-group,
+  .filtered .tree {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  .folderContainerBody {
+    display: grid;
+    grid-template-columns: 0.5fr 2fr;
+    grid-gap: 1em;
+  }
+  
+  .empty-state {
+    margin: 5px;
+    display: flex;
+    height: calc(100vh - 10px);
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .folder-container {
+    padding: 5px;
+    background-color: #393E41;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .folder:hover {
+    background-color: rgb(120, 120, 120);
+    border-radius: 5px;
+  }
+  .folder:hover .buttons-container {
+    visibility:visible;
+  
+  }
+  .folder>div>button {
+    font-size: 16px;
+  }
+  
+  .folder {
+    background-color: #393E41;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 3px;
+    width: 300px;
+    position: relative;
+  }
+  
+  .folder>span {
+    color: #fff;
+  
+  }
+  
+  button {
+    background-color: transparent;
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  
+  .folder span label {
+    display: inline-block;
+    margin: 3px 5px;
+    position: absolute;
+    top: 2px;
+  }
+  
+  .addItem {
+    background-color: #393E41;
+    align-items: center;
+    padding: 5px 3px;
+    width: 300px;
+    position: relative;
+  }
+  
+  .addItem>span {
+    color: white;
+    padding-right: 5px;
+  }
+  
+  .buttons-container {
+    display: flex;
+    visibility:hidden;
+  
+  }
+  
+  .folder>span>input {
+    width: 75%;
+    margin-left: 5px;
+  }

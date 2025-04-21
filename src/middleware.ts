@@ -4,21 +4,22 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
-
   const pathname = req.nextUrl.pathname;
 
-  // ✅ Allow both login and register routes
+  // ✅ Define public routes
   const isPublicRoute =
-    pathname.startsWith("/Auth/Login") || pathname.startsWith("/Auth/Register");
+    pathname === "/" ||
+    pathname.startsWith("/Auth") 
+ 
 
-  // 👮‍♂️ User not logged in and trying to access protected route
+  // 🔐 Redirect unauthenticated users away from protected routes
   if (!token && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/Auth/Login", req.url));
+    return NextResponse.redirect(new URL("/Auth", req.url));
   }
 
-  // 🔄 Logged in user trying to access login/register
-  if (token && isPublicRoute) {
-    return NextResponse.redirect(new URL("/", req.url));
+  // 🔄 Redirect authenticated users trying to access login, register, or root
+  if (token && (pathname === "/" || pathname.startsWith("/Auth/"))) {
+    return NextResponse.redirect(new URL("/Editor", req.url));
   }
 
   return NextResponse.next();

@@ -73,7 +73,6 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -176,7 +175,7 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ data, onChange }: { data: any; onChange: (newData: any) => void }) {
   const isMobile = useMobile()
   const windowSize = useWindowSize()
   const [mobileView, setMobileView] = React.useState<
@@ -243,8 +242,20 @@ export function SimpleEditor() {
       TrailingNode,
       Link.configure({ openOnClick: false }),
     ],
-    content: content,
+    content: data,
+    onUpdate: ({ editor }) => {
+      // Whenever editor content is updated, update state
+      const newData = editor.getJSON();
+      onChange(newData); // Update the parent component's state
+    },
   })
+
+  // React.useEffect(() => {
+  //   if (editor && data) {
+  //     editor.commands.setContent(data)
+  //   }
+  // }, [data, editor])
+
 
   React.useEffect(() => {
     const checkCursorVisibility = () => {
